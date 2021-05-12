@@ -19,7 +19,7 @@ class Sekai extends Client {
 
 		this.aliases = new Collection();
 
-		this.event = new Collection();
+		this.events = new Collection();
 
 		this.db = new Collection();
 
@@ -37,8 +37,11 @@ class Sekai extends Client {
 	loadAssets() {
 		const git_difference_url =
 			'https://github.com/Sekai-World/sekai-master-db-diff.git';
-		const local_path = 'assets/data';
-		git(local_path).pull();
+		const local_path_data = 'assets/data';
+		git(local_path_data).pull();
+		const git_i18n_url = 'https://github.com/Sekai-World/sekai-i18n';
+		const local_path_i18n = 'assets/i18n';
+		git(local_path_i18n).pull();
 	}
 
 	loadCommands() {
@@ -87,6 +90,10 @@ class Sekai extends Client {
 				this.language.set(localname, local.language);
 			}
 		});
+	}
+	
+	disconnectDatabase() {
+	  mongoose.disconnect();
 	}
 
 	async loadDatabase() {
