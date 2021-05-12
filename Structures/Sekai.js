@@ -1,130 +1,124 @@
-const { Client, Collection } = require("discord.js")
-    , chalk                  = require("chalk")
-    , path                   = require("path")
-    , glob                   = require("glob")
-    , mongoose               = require("mongoose");
-    
-require("../Structures/Guild");
+const { Client, Collection } = require('discord.js'),
+	chalk = require('chalk'),
+	path = require('path'),
+	glob = require('glob'),
+	git = require('simple-git'),
+	mongoose = require('mongoose');
 
-class Sekai extends Client{
-  constructor(options = {}){
-    super(options);
-      
-      this.config = require("../config.js");
-      
-      this.commands = new Collection();
-      
-      this.event = new Collection();
-      
-      this.db = new Collection();
-      
-      this.language = new Collection();
-      
-      console.log(chalk.blue("Client initialised..."));
-  }
-  
-  get directory() {
+require('../Structures/Guild');
+const Command = require('./Command');
+
+class Sekai extends Client {
+	constructor(options = {}) {
+		super(options);
+
+		this.config = require('../config.js');
+
+		this.commands = new Collection();
+
+		this.aliases = new Collection();
+
+		this.event = new Collection();
+
+		this.db = new Collection();
+
+		this.language = new Collection();
+
+		this.owners = this.config.Master;
+
+		console.log(chalk.blue('Client initialised...'));
+	}
+
+	get directory() {
 		return `${path.dirname(require.main.filename)}${path.sep}`;
 	}
-	
+
 	loadAssets() {
-	  
+		const git_difference_url =
+			'https://github.com/Sekai-World/sekai-master-db-diff.git';
+		const local_path = 'assets/data';
+		git(local_path).pull();
 	}
-	
+
 	loadCommands() {
+		glob(`${this.directory}/Commands/**/*.js`, (err, files) => {
+			if (err) throw new Error(err);
 
-        glob(`${this.directory}/Commands/**/*.js`, (err, files) => {
+			for (const file of files) {
+				delete require.cache[[`${file}`]];
+				const command = new (require(file))(this),
+					filename = file.slice(file.lastIndexOf('/') + 1, file.length - 3);
 
-            if (err) throw new Error(err);
+				if (!(command instanceof Command))
+					throw new TypeError(`${filename} does not correct type of command.`);
 
-            for (const file of files) {
+				this.commands.set(command.name, command);
 
-                delete require.cache[[`${file}`]];
-                const command = new (require(file))(this),
-                      filename = file.slice(file.lastIndexOf("/") + 1, file.length - 3);
+				command.aliases.length &&
+					command.aliases.map(alias => this.aliases.set(alias, command.name));
+			}
+		});
+	}
 
-                if (!(command instanceof Command))
-                    throw new TypeError(`${filename} does not correct type of command.`);
+	loadEvents() {
+		glob(`${this.directory}/Events/**/*.js`, (err, files) => {
+			if (err) throw new Error(err);
 
-                this.commands.set(command.name, command);
+			for (const file of files) {
+				delete require.cache[[`${file}`]];
+				const event = new (require(file))(this),
+					eventname = file.slice(file.lastIndexOf('/') + 1, file.length - 3);
 
-            }
-            
-        });
-    }
-    
-  loadEvents() {
+				if (event.enable) super.on(eventname, (...args) => event.run(...args));
+			}
+		});
+	}
 
-        glob(`${this.directory}/Events/**/*.js`, (err, files) => {
+	loadLocal() {
+		glob(`${this.directory}/Languages/**/*.js`, (err, files) => {
+			if (err) throw new Error(err);
 
-            if (err) throw new Error(err);
+			for (const file of files) {
+				delete require.cache[[`${file}`]];
+				const local = new (require(file))(this),
+					localname = file.slice(file.lastIndexOf('/') + 1, file.length - 3);
 
-            for (const file of files) {
+				this.language.set(localname, local.language);
+			}
+		});
+	}
 
-                delete require.cache[[`${file}`]];
-                const event     = new (require(file))(this),
-                      eventname = file.slice(file.lastIndexOf("/") + 1, file.length - 3);
+	async loadDatabase() {
+		await require('../assets/connectDB');
+		console.log(chalk.green(`[MONGODB | CONNECT]`));
 
-                if (event.enable)
-                    super.on(eventname, (...args) => event.run(...args));
+		glob(`${this.directory}/Models/*.js`, (err, files) => {
+			if (err) throw new Error(err);
 
-            }
-        });
-    }
-    
-  loadLocal() {
+			for (const file of files) {
+				delete require.cache[[`${file}`]];
+				const model = require(file),
+					modelname = file.slice(file.lastIndexOf('/') + 1, file.length - 3);
 
-        glob(`${this.directory}/Languages/**/*.js`, (err, files) => {
+				this.db.set(modelname, model);
+			}
+		});
+	}
 
-            if (err) throw new Error(err);
+	async login() {
+		await super.login(process.env.SEKAI_TOKEN);
+	}
 
-            for (const file of files) {
+	init() {
+		//this.loadAssets();
+		this.loadCommands();
+		this.loadEvents();
+		this.login();
+		this.loadLocal();
+		this.loadDatabase();
+	}
 
-                delete require.cache[[`${file}`]];
-                const local     = new (require(file))(this),
-                      localname = file.slice(file.lastIndexOf("/") + 1, file.length - 3);
-
-                this.language.set(localname, local.language);
-
-            }
-        });
-    }
-    
-  async loadDatabase() {
-    
-    await require("../assets/connectDB")
-    console.log(chalk.green(`[MONGODB | CONNECT]`))
-    
-      glob(`${this.directory}/Models/*.js`, (err, files) => {
-        
-        if(err) throw new Error(err);
-        
-        for (const file of files) {
-
-                delete require.cache[[`${file}`]];
-                const model     = require(file),
-                      modelname = file.slice(file.lastIndexOf("/") + 1, file.length - 3);
-
-                this.db.set(modelname, model);
-
-            }
-        });
-  }
-    
-  async login() {
-    
-        await super.login(process.env.SEKAI_TOKEN);
-    }
-
-    init() {
-        this.loadCommands();
-        this.loadEvents();
-        this.login();
-        this.loadLocal();
-        this.loadDatabase();
-    }
-  
-  //-------------------  
+	//-------------------
 }
 
 module.exports = Sekai;

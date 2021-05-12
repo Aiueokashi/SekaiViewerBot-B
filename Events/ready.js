@@ -41,10 +41,13 @@ class Ready {
                     });
                 }, ((typeof interval === "number" && interval) || 30) * 1000);
         }
-        
-        client.guilds.cache.keyArray().forEach(g=>{
-          const guild = client.guilds.cache.get(g)
+        const guildmanger = client.guilds.cache;
+        guildmanger.keyArray().forEach((g,i)=>{
+          const guild = guildmanger.get(g)
           guild.loadGuild()
+          if(guildmanger.keyArray().length-1 === i){
+            console.log(chalk.bold.green("[LOADED ALL]"))
+          }
         });
 
     }
