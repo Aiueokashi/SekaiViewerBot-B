@@ -7,6 +7,7 @@ const { Client, Collection } = require('discord.js'),
 
 require('../Structures/Guild');
 const Command = require('./Command');
+const EmbedToPage = require('./Embed');
 
 class Sekai extends Client {
 	constructor(options = {}) {
@@ -107,6 +108,10 @@ class Sekai extends Client {
 
 	async login() {
 		await super.login(process.env.SEKAI_TOKEN);
+	}
+	
+	createPageEmbed(message, pages, paging, trash){
+	  EmbedToPage(message, pages, paging, trash);
 	}
 
 	init() {
