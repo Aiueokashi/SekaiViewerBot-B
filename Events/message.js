@@ -19,7 +19,7 @@ class Message {
     if (!message.member && message.guild)
             message.member = await message.guild.members.fetch(message.author);
 
-    const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(message.guild.settings.prefix)})`);
+    const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>[\s]*|${escapeRegex(message.guild.settings.prefix)}[\s]*)`);
     if(!prefixRegex.test(message.content)) return;
     const [, matchedPrefix] = message.content.match(prefixRegex);
     const [commandPrefix,...args] = message.content.slice(matchedPrefix.length).split(/[\s]+/gm);
@@ -47,19 +47,19 @@ class Message {
             return;
             
     if (command.args && !args.length)
-            return;
+            return message.channel.send(!command.usage || "" ? lang[1] : { embed : lang[2] });
             
     if (message.guild) {
 
             const userPerms = message.channel.permissionsFor(message.member).missing(command.userPerms);
 
             if (userPerms.length)
-                return message.reply(lang[6]);
+                return message.reply(lang[3]);
 
             const botPerms = message.channel.permissionsFor(client.user).missing(command.botPerms);
 
 			if (botPerms.length)
-				return message.reply(lang[7]);
+				return message.reply(lang[4]);
         }
             
     command.setMessage(message);
