@@ -12,8 +12,18 @@ const EmbedToPage = require('./Embed');
 class Sekai extends Client {
 	constructor(options = {}) {
 		super(options);
-
+		
 		this.config = require('../config.js');
+		
+		this.pjAPI = {
+		  baseURL: null
+		}
+		
+		this.debug = new Array();
+		
+		this.i18n = new Collection();
+		
+		this.optlang = new Array();
 
 		this.commands = new Collection();
 
@@ -27,7 +37,7 @@ class Sekai extends Client {
 
 		this.owners = this.config.Master;
 
-		console.log(chalk.blue('Client initialised...'));
+		console.log(chalk.bold.red('Client initialised...'));
 	}
 
 	get directory() {
@@ -43,8 +53,22 @@ class Sekai extends Client {
 		const local_path_i18n = 'assets/i18n';
 		git(local_path_i18n).pull();
 	}
+	
+	loadI18n() {
+	  glob(`./assets/i18n/*`, (err,folders) => {
+	    folders.forEach(folder => {
+	     var [...names] = folder.split('/');
+	  glob(`./assets/i18n/${names[3]}/*.json`, (err, files) => {
+	    files.forEach(file => {
+	      const filecontent = require(`.${file}`)
+	      this.i18n.set(`${names[3]},${file.slice(file.lastIndexOf('/') + 1, file.length - 5)}`, filecontent)
+	    })
+	  })
+    });
+	  })
+	}
 
-	loadCommands() {
+	async loadCommands() {
 		glob(`${this.directory}/Commands/**/*.js`, (err, files) => {
 			if (err) throw new Error(err);
 
@@ -120,14 +144,35 @@ class Sekai extends Client {
 	createPageEmbed(message, pages, paging, trash){
 	  EmbedToPage(message, pages, paging, trash);
 	}
+	
+	setURL(){
+	  this.pjAPI.baseURL = this.config.apiBaseURL
+	}
 
 	init() {
+	  this.loadI18n();
+	  this.setURL();
 		//this.loadAssets();
 		this.loadCommands();
 		this.loadEvents();
 		this.login();
 		this.loadLocal();
 		this.loadDatabase();
+	}
+	
+	clearAllCache() {
+	  this.commands.clear();
+	  this.aliases.clear();
+	  this.language.clear();
+	  this.events.clear();
+	  this.db.clear();
+	}
+	
+	loadAll() {
+	  this.loadCommands();
+	  this.loadEvents();
+	  this.loadLocal();
+	  this.loadDatabase();
 	}
 
 	//-------------------

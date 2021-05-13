@@ -10,7 +10,7 @@ class Language {
         this.language = {
 
             flag  : "🇯🇵",
-            local: "Japanese",
+            local: "ja",
             
             message : (message,cmd) =>[
                 	'`<<cmd>>`コマンドを使うには`<<time>>`秒待ってください',
@@ -36,6 +36,34 @@ class Language {
                 "どの国の言葉を使いますか？",
                 "日本語に設定しました。",
             ],
+            reload: () => [
+              "jsonファイルを再読み込みしました。",
+              (cmds) => `\`${cmds}\`個のコマンドを再読み込みしました。`,
+              "イベントハンドラを再読み込みしました。",
+              (langs) => `\`${langs.length}\`個の言語ファイルを再読み込みしました。`,
+              (models) => `\`${models.length}\`個のデータスキーマを再読み込みしました。`,
+                {
+                    title : `拡張機能のキャッシュを全て破棄しました。: ${client.user.tag}`,
+                    fields : [
+                        {
+                            name: "Commands",
+                            value:`${client.commands.length} : \`\`\`${client.commands.keyArray().toString()}\`\`\``,
+                        },
+                        {
+                            name: "EventHandler",
+                            value:`${client.events.length} : \`\`\`${client.events.keyArray().toString()}\`\`\``,
+                        },
+                        {
+                            name: "DatabaseModels",
+                            value:`${client.db.length} : \`\`\`${client.db.keyArray().toString()}\`\`\``
+                        },
+                        {
+                            name: "Languages",
+                            value:`${client.language.length} : \`\`\`${client.language.keyArray().toString()}\`\`\``
+                        },
+                    ],
+                },
+              ]
         }
     }
     get(term, ...args) {

@@ -11,10 +11,10 @@ class Language extends Command {
 			args        : false,
 			category    : "Admin",
 			cooldown    : 10000,
-			aliases     : ["sl"],
+			aliases     : ["la"],
 			permLevel   : 9,
 			userPerms  : "ADMINISTRATOR",
-			allowDMs    : false,
+			guildOnly    : true,
 		});
 
 	}

@@ -7,7 +7,7 @@ class Eval extends Command {
         super(client, {
             name        : "eval",
             description : "Evaluate/Execute JavaScript code",
-            usage       : "eval [code]",
+            usage       : "eval [...code]",
             args        : true,
             category    : "Owner",
             cooldown    : 10000,

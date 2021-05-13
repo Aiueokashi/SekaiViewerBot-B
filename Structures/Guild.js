@@ -38,7 +38,7 @@ Structures.extend(
 							guildId: this.id,
 							logChannelId: null,
 							prefix: this.client.config.prefix,
-							local: 'English',
+							local: 'en',
 							settings: {
 								owner: this.ownerID
 							}
@@ -47,6 +47,7 @@ Structures.extend(
 						this.settings = newGuildData;
 					} else {
 						this.settings = guildData;
+						
 					}
 				};
 			}

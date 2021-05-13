@@ -7,10 +7,10 @@ class Reload extends Command {
         super(client, {
             name        : "reload",
             description : "Reload assetlist/commands/etc...",
-            usage       : "reload [target]",
+            usage       : "reload <target>",
             args        : true,
             category    : "Owner",
-            cooldown    : 100000,
+            cooldown    : 10000,
             permLevel   : 10,
             allowDMs    : false,
             ownerOnly   : true,
@@ -18,32 +18,48 @@ class Reload extends Command {
     }
 
     async run(message, [...target]) {
+      const lang = this.client.language.get(message.guild.settings.local).reload();
+      
       switch(target[0]){
         case "asset":
-          this.client.loadAssets();
+          await this.client.loadAssets();
+          super.respond(lang[0]);
         break;
         
         case "command":
-          this.client.commands.clear();
-          this.client.aliases.clear();
-          this.client.loadCommands();
+          const num = this.client.commands.keyArray().length
+          await this.client.commands.clear();
+          await this.client.aliases.clear();
+          this.client.loadCommands()
+          .then((mount) => {
+            super.respond(lang[1](num));
+          })
         break;
         
         case "event":
-          this.client.events.clear();
-          this.client.loadEvents();
+          await this.client.events.clear();
+          await this.client.loadEvents();
+          super.respond(lang[2]);
         break;
         
         case "language":
-          this.client.language.clear();
-          this.client.loadLocal();
+          await this.client.language.clear();
+          await this.client.loadLocal();
+          super.respond(lang[3](this.client.language.keyArray()));
         break;
         
         case "database":
-          this.client.disconnectDatabase();
-          this.client.loadDatabase();
+          await this.client.disconnectDatabase();
+          await this.client.loadDatabase();
+          super.respond(lang[4](this.client.db));
         break;
-          
+        
+        case "destroy":
+          await this.client.clearAllCache();
+          await this.client.loadAll();
+          super.respond({embed: lang[5]});
+        break;
+        
       }
 
     }
