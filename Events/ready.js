@@ -47,7 +47,26 @@ class Ready {
 				console.log(chalk.bold.green('[LOADED ALL]'));
 			}
 		});
-		
+		/*let arg = "kaito"
+		let characterId = 0;
+		let args = arg.toLowerCase()
+		const transName = this.client.i18n.get(`en|character_name`);
+		let count = 0;
+	  for (const t of Object.entries(transName)){
+	    count++;
+	    const c = t[1]
+	    if(c.firstName === undefined){
+	      c.firstName = "@!$#!%@$%"
+	    }
+	    if(c.firstName.toLowerCase().match(args) ||c.givenName.toLowerCase().match(args)){
+	      characterId = count;
+	      break;
+	    }
+	  }
+	  let res = await axios.get(`${this.client.pjAPI.baseURL}/chara?id=${characterId}`)
+	  console.log(res.data)*/
+	  
+	  
 	}
 }
 

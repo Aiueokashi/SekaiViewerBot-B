@@ -58,10 +58,13 @@ class Sekai extends Client {
 	  glob(`./assets/i18n/*`, (err,folders) => {
 	    folders.forEach(folder => {
 	     var [...names] = folder.split('/');
+	     if(names[3].length < 6 && names[3] !== "CNAME"){
+	     	 this.optlang.push(names[3])
+	     }
 	  glob(`./assets/i18n/${names[3]}/*.json`, (err, files) => {
 	    files.forEach(file => {
 	      const filecontent = require(`.${file}`)
-	      this.i18n.set(`${names[3]},${file.slice(file.lastIndexOf('/') + 1, file.length - 5)}`, filecontent)
+	      this.i18n.set(`${names[3]}|${file.slice(file.lastIndexOf('/') + 1, file.length - 5)}`, filecontent)
 	    })
 	  })
     });

@@ -42,6 +42,8 @@ class Command {
 	}
 
 	respond(message) {
+	  if(message.includes(this.client.token))
+                message = message.replace(this.client.token, "gm", "*Token*");
 		return this.message.channel.send(message);
 	}
 }

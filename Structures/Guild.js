@@ -7,7 +7,7 @@ Structures.extend(
 			constructor(client, data) {
 				super(client, data);
 
-				this.serverQueue = {
+				this.player = {
 					_queue: [],
 					_oldQueue: [],
 					_connection: null,
@@ -19,7 +19,7 @@ Structures.extend(
 					_ttl: [0, 0]
 				};
 
-				this.textQueue = {
+				this.reader = {
 					_volume: 1,
 					_words: [],
 					_oldWords: [],
