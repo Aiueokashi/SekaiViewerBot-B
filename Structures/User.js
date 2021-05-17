@@ -12,11 +12,11 @@ Structures.extend(
 				this.language = null;
 				
 				this.settings = null;
-			}
-		  async loadUser(uid) {
+			
+		  this.loadUser = async function() {
 				  const userModel = this.client.db.get('userModel');
 				  let USER = await userModel.findOne({
-				    userId:uid,
+				    userId:this.id,
 				  });
 				  if(!USER){
 				    this.isLoaded = true;
@@ -27,14 +27,14 @@ Structures.extend(
 				    this.language = USER.language;
 				  }
 				}
-			async createUser(uid) {
+		this.createUser = async function() {
 			  const userModel = this.client.db.get('userModel');
 			  let USER = await userModel.findOne({
-				    userId:uid,
+				    userId:this.id,
 				  });
 				  if(!USER){
 				    let NewUser = new userModel({
-				      userId:uid,
+				      userId:this.id,
 				      language:'en',
 				      settings:null,
 				      stats:null,
@@ -45,6 +45,6 @@ Structures.extend(
 				    this.language = NewUser.language;
 				  }
 			}
-			
+			}
 		}
 );

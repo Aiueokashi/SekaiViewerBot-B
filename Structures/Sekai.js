@@ -6,6 +6,7 @@ const { Client, Collection } = require('discord.js'),
 	mongoose = require('mongoose');
 
 require('../Structures/Guild');
+require('../Structures/User');
 const Command = require('./Command');
 const EmbedToPage = require('./Embed');
 
@@ -16,7 +17,8 @@ class Sekai extends Client {
 		this.config = require('../config.js');
 		
 		this.pjAPI = {
-		  baseURL: null
+		  baseURL: null,
+		  charaURL: null
 		}
 		
 		this.debug = new Array();
@@ -150,6 +152,7 @@ class Sekai extends Client {
 	
 	setURL(){
 	  this.pjAPI.baseURL = this.config.apiBaseURL
+	  this.pjAPI.charaURL = this.config.characterPhotoURL
 	}
 
 	init() {

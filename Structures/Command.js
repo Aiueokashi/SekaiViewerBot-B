@@ -7,6 +7,7 @@ class Command {
 		this.name = options.name || null;
 		this.aliases = options.aliases || [];
 		this.description = options.description || 'No information specified.';
+		this.example = options.example || [];
 		this.category = options.category || 'General';
 		this.args = options.args || false;
 		this.usage = options.usage || null;
@@ -42,8 +43,6 @@ class Command {
 	}
 
 	respond(message) {
-	  if(message.includes(this.client.token))
-                message = message.replace(this.client.token, "gm", "*Token*");
 		return this.message.channel.send(message);
 	}
 }

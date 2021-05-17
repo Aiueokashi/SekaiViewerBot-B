@@ -5,7 +5,7 @@ class Language extends Command {
 	constructor(client) {
 		super(client, {
 			name        : "language",
-			description : "Change the language used by SekaiViewerBot in the guild",
+			description : "Change the language used by SekaiViewerBot System Message in the guild",
 			usage       : "language",
 			exemple     : [],
 			args        : false,

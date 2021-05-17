@@ -15,22 +15,26 @@ class Message {
 			message.member = await message.guild.members.fetch(message.author);
 
 		const prefixRegex = new RegExp(
-			`^(<@!?${message.client.user.id}>[\s]*|${escapeRegex(
+			`^(<@!?${message.client.user.id}>|${escapeRegex(
 				message.guild.settings.prefix
-			)}[\s]*)`
+			)})`
 		);
 		if (!prefixRegex.test(message.content)) return;
 		const [, matchedPrefix] = message.content.match(prefixRegex);
-		const [commandPrefix, ...args] = message.content
+		let content = message.content
 			.slice(matchedPrefix.length)
 			.split(/[\s]+/gm);
+		
+		if(content[0] === ""){
+    	let trash = content.shift()
+    }
+    const [commandPrefix, ...args] = content
 
 		const command =
 			client.commands.get(commandPrefix.toLowerCase()) ||
 			client.commands.get(client.aliases.get(commandPrefix.toLowerCase()));
 
 		if (!command) return;
-
 		const lang = client.language
 			.get((message.guild && message.guild.settings.local) || 'English')
 			.message(message, command);
