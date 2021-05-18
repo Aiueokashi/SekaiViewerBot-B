@@ -17,7 +17,7 @@ class MyLanguage extends Command {
     });
   }
 
-  async run(message, [...args]) {
+  async run(message) {
     let _already = false;
     const user = this.client.users.cache.get(message.author.id);
     const lang = this.client.language
@@ -51,7 +51,7 @@ class MyLanguage extends Command {
       time: 30000,
       errors: ["time"],
     });
-    if (response.size !== 0) {
+    if (response.first().content) {
       const newlang = response.first().content;
       if (newlang === userData.language) {
         return super.respond(lang[0]);

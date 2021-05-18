@@ -5,8 +5,9 @@ const { Client, Collection } = require("discord.js"),
   git = require("simple-git"),
   mongoose = require("mongoose");
 
-require("../Structures/Guild");
-require("../Structures/User");
+require("./Extender/Guild");
+require("./Extender/User");
+const SekaiError = require('./Extender/Error');
 const Command = require("./Command");
 const EmbedToPage = require("./Embed");
 
@@ -89,12 +90,16 @@ class Sekai extends Client {
           filename = file.slice(file.lastIndexOf("/") + 1, file.length - 3);
 
         if (!(command instanceof Command))
-          throw new TypeError(`${filename} does not correct type of command.`);
+          throw new SekaiError('INVALID_COMMAND_TYPE', filename);
 
         this.commands.set(command.name, command);
 
         command.aliases.length &&
-          command.aliases.map((alias) => this.aliases.set(alias, command.name));
+          command.aliases.map((alias) => {
+            const conflict = this.aliases.get(alias.toLowerCase());
+            if (conflict) throw new SekaiError('ALIAS_CONFLICT', alias, command.name, conflict);
+            this.aliases.set(alias, command.name)
+          });
       }
     });
   }
@@ -167,9 +172,9 @@ class Sekai extends Client {
     //this.loadAssets();
     this.loadCommands();
     this.loadEvents();
-    this.login();
     this.loadLocal();
     this.loadDatabase();
+    this.login();
   }
 
   clearAllCache() {

@@ -11,8 +11,6 @@ class Ready {
     const client = this.client;
     //lang = client.language.get(client.config.Language || "English").ready();
 
-    console.clear();
-
     console.log(chalk.bold("ready"));
 
     if (client.config.Presence) {
