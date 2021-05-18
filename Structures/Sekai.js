@@ -3,13 +3,14 @@ const { Client, Collection } = require("discord.js"),
   path = require("path"),
   glob = require("glob"),
   git = require("simple-git"),
-  mongoose = require("mongoose");
+  mongoose = require("mongoose"),
+  SekaiError = require('./Extender/Error'),
+  Command = require("./Command"),
+  EmbedToPage = require("./Embed"),
+  SekaiUtil = require("./SekaiUtil");
 
 require("./Extender/Guild");
 require("./Extender/User");
-const SekaiError = require('./Extender/Error');
-const Command = require("./Command");
-const EmbedToPage = require("./Embed");
 
 class Sekai extends Client {
   constructor(options = {}) {
@@ -39,6 +40,8 @@ class Sekai extends Client {
     this.language = new Collection();
 
     this.owners = this.config.Master;
+    
+    this.util = new SekaiUtil(this);
 
     console.log(chalk.bold.red("Client initialised..."));
   }
@@ -126,7 +129,7 @@ class Sekai extends Client {
         delete require.cache[[`${file}`]];
         const local = new (require(file))(this),
           localname = file.slice(file.lastIndexOf("/") + 1, file.length - 3);
-
+          
         this.language.set(localname, local.language);
       }
     });
