@@ -1,4 +1,5 @@
-const { Permissions } = require("discord.js");
+const { Permissions } = require("discord.js"),
+      SekaiError = require("./Extender/Error");
 
 class Command {
   constructor(client, options = {}) {
@@ -12,6 +13,7 @@ class Command {
     this.args = options.args || false;
     this.usage = options.usage || null;
     this.cooldown = options.cooldown || 1000;
+    this.enable = options.enable || true;
 
     this.userPerms = new Permissions(
       options.userPerms || "SEND_MESSAGES"
@@ -27,7 +29,9 @@ class Command {
   }
 
   async run() {
-    throw new Error(`Command ${this.name} doesn't provide a run method!`);
+    const err = new SekaiError('NOT_PROVIDE_RUN_METHOD', this.name);
+    this.message.channel.send({embed : { title : err.code, description: err.message }});
+    throw err;
   }
 
   startCooldown(user) {

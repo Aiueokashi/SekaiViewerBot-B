@@ -31,7 +31,10 @@ class Prefix extends Command {
       const lang = client.language
         .get(message.guild.settings.local)
         .prefix(args[0], oldPrefix);
-      super.respond({ embed: lang[0] });
+      return super.respond({ embed: lang[0] });
+    }else{
+      super.respond(lang[1]);
+      return 'failed';
     }
   }
 }

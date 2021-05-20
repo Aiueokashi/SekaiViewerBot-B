@@ -48,8 +48,9 @@ Structures.extend(
           } else {
             this.settings = guildData;
           }
+          console.log(this.client.chalk.bold.bgGreen(`GUILD [LOADED | ${this.name}]`)); 
         };
       }
-      //=----------------
+     
     }
 );

@@ -30,6 +30,7 @@ class Character extends Command {
   async run(message, [...args]) {
     const user = this.client.users.cache.get(message.author.id);
     const lang = this.client.language.get(message.guild.settings.local).chara();
+    let _notChanged = true;
     await user.loadUser(user.id);
     let userData = await this.client.db.get("userModel").findOne({
       userId: user.id,
@@ -41,10 +42,21 @@ class Character extends Command {
       user.language = userData.language;
     }
     const language = user.language;
-    const transName = this.client.i18n.get(`${language}|character_name`);
-    const transProf = this.client.i18n.get(`${language}|character_profile`);
-    const transUnit = this.client.i18n.get(`${language}|unit_profile`);
-    const transTitle = this.client.i18n.get(`${language}|member`);
+    let transName = this.client.i18n.get(`${language}|character_name`);
+    let transProf = this.client.i18n.get(`${language}|character_profile`);
+    let transUnit = this.client.i18n.get(`${language}|unit_profile`);
+    let transTitle = this.client.i18n.get(`${language}|member`);
+    
+    if(transName === undefined){
+      transName = this.client.i18n.get(`en|character_name`);
+      _notChanged = false;
+    }
+    if(transProf === undefined){
+      transProf = this.client.i18n.get(`en|character_profile`);
+      transUnit = this.client.i18n.get(`en|unit_profile`);
+      transTitle = this.client.i18n.get(`en|member`);
+      _notChanged = false;
+    }
 
     let CHARACTER_ID = -1;
     if (isNaN(args[0])) {
@@ -64,7 +76,8 @@ class Character extends Command {
         }
       }
       if (CHARACTER_ID === -1) {
-        return super.respond(lang[0](args[0]));
+        super.respond(lang[0](args[0]));
+        return 'failed';
       }
     } else {
       CHARACTER_ID = args[0];
@@ -73,7 +86,8 @@ class Character extends Command {
     const json = require("../../assets/data/gameCharacterUnits.json");
     const data = json.find((j) => j.gameCharacterId === CHARACTER_ID);
     if (data === undefined) {
-      return super.respond(lang[1](args[0]));
+      super.respond(lang[1](args[0]));
+      return 'failed';
     }
 
     let chara_embed = new MessageEmbed()
@@ -99,7 +113,8 @@ class Character extends Command {
         chara_embed.addField(transTitle[t], p[t]);
       }
     }
-    super.respond(chara_embed);
+    _notChanged ? null : chara_embed.setFooter(lang[2](language));
+    return super.respond(chara_embed);
   }
 }
 

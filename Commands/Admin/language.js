@@ -51,9 +51,9 @@ class Language extends Command {
 
     //selector.delete({ reason: "Command completed." });
 
-    super.respond(
-      client.language.get(message.guild.settings.local).language()[1]
-    );
+    super.respond(client.language.get(message.guild.settings.local).language()[1]);
+    
+    return 1;
   }
 }
 

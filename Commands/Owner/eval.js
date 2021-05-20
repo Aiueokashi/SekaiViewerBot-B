@@ -9,9 +9,8 @@ class Eval extends Command {
       usage: "eval [...code]",
       args: true,
       category: "Owner",
-      cooldown: 10000,
+      cooldown: 0,
       permLevel: 10,
-      allowDMs: false,
       ownerOnly: true,
     });
   }
@@ -32,14 +31,9 @@ class Eval extends Command {
 
       message.channel.send(errorDetails, { code: "js" });
     } finally {
-      const time = new Date(message.createdTimestamp),
-        log = ` USE OF EVAL by ${message.author.username} [ ${message.author.id} ]`;
+      const log = ` USE OF EVAL by ${message.author.username} ( ${message.author.id} )`;
 
-      console.log(
-        time.toLocaleTimeString(),
-        time.toLocaleDateString(),
-        chalk.bgRed.black(log)
-      );
+      console.log(chalk.bold.bgRed(`EVAL [${log}]`));
     }
   }
 }

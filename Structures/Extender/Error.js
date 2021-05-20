@@ -1,6 +1,10 @@
+const chalk = require('chalk');
+chalk.err = chalk.bold.red;
 const ErrMsg = {
-  ALIAS_CONFLICT: (alias, id, conflict) => `Alias '${alias}' of '${id}' already exists on '${conflict}'`,
-  INVALID_COMMAND_TYPE:(filename) => `${filename} does not correct type of command.`,
+  ALIAS_CONFLICT: (alias, id, conflict) => `Alias '${chalk.err(alias)}' of '${chalk.err(id)}' already exists on '${chalk.err(conflict)}'`,
+  INVALID_COMMAND_TYPE:(filename) => `${chalk.err(filename)} does not correct type of command.`,
+  COMMAND_CONFLICT: (command, conflict) => `Command '${chalk.err(command)}' already exists on '${chalk.err(conflict)}'`,
+  NOT_PROVIDE_RUN_METHOD: (name) => `Command '${name}' doesn't provide a run method!`,
 };
 
 class SekaiError extends Error {
@@ -15,7 +19,7 @@ class SekaiError extends Error {
   }
   
   get name() {
-        return `SekaiError [${this.code}]`;
+        return chalk.bold.bgRed(`SekaiError [${this.code}]`);
     }
 }
 

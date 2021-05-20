@@ -19,6 +19,8 @@
     "glob": "^7.1.7",
     "humanize-duration": "^3.24.0",
     "i18n": "^0.13.3",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "mongoose": "^5.12.8",
     "node-fetch": "^2.6.1",
     "simple-git": "^2.38.1"

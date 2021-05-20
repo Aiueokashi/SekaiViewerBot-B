@@ -10,9 +10,7 @@ class Ready {
   async run() {
     const client = this.client;
     //lang = client.language.get(client.config.Language || "English").ready();
-
-    console.log(chalk.bold("ready"));
-
+    console.log(chalk.bold.bgBlue("CLIENT [READY]"));
     if (client.config.Presence) {
       const { status, games, interval } = client.config.Presence;
 
@@ -41,21 +39,8 @@ class Ready {
     guildmanger.keyArray().forEach((g, i) => {
       const guild = guildmanger.get(g);
       guild.loadGuild();
-      if (guildmanger.keyArray().length - 1 === i) {
-        console.log(chalk.bold.green("[LOADED ALL]"));
-      }
     });
-    /*
-		let language = "ja";
-		const transName = this.client.i18n.get(`${language}|character_name`);
-		const transProf = this.client.i18n.get(`${language}|character_profile`);
-		const transUnit = this.client.i18n.get(`${language}|unit_profile`);
-		const transTitle = this.client.i18n.get(`${language}|member`);
-	  const p = transProf[25];
-	  for(const t in p){
-			    console.log(`${transTitle[t]}:${p[t]}`)
-			}
-	  */
+    
   }
 }
 

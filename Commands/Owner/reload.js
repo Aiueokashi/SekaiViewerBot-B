@@ -10,9 +10,8 @@ class Reload extends Command {
       example: ["asset", "command", "event", "language", "database", "destroy"],
       args: true,
       category: "Owner",
-      cooldown: 10000,
+      cooldown: 0,
       permLevel: 10,
-      allowDMs: false,
       ownerOnly: true,
     });
   }

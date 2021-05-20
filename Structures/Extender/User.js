@@ -26,7 +26,9 @@ Structures.extend(
             this.settings = USER;
             this.language = USER.language;
           }
+          console.log(this.client.chalk.bold.bgGreen(`USER [LOADED | ${this.tag}(${this.id})]`))
         };
+        
         this.createUser = async function () {
           const userModel = this.client.db.get("userModel");
           let USER = await userModel.findOne({
@@ -44,6 +46,7 @@ Structures.extend(
             this.settings = NewUser;
             this.language = NewUser.language;
           }
+          console.log(this.client.chalk.bold.bgGreen(`USER [CREATED | ${this.tag}(${this.id})]`))
         };
       }
     }

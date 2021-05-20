@@ -11,6 +11,8 @@ const { Client, Collection } = require("discord.js"),
 
 require("./Extender/Guild");
 require("./Extender/User");
+require("./Http/keepAlive");
+require("./Extender/Console");
 
 class Sekai extends Client {
   constructor(options = {}) {
@@ -42,8 +44,10 @@ class Sekai extends Client {
     this.owners = this.config.Master;
     
     this.util = new SekaiUtil(this);
+    
+    this.chalk = chalk;
 
-    console.log(chalk.bold.red("Client initialised..."));
+    console.log(chalk.bold.bgRed("CLIENT [INITIALISED]"));
   }
 
   get directory() {
@@ -58,6 +62,7 @@ class Sekai extends Client {
     const git_i18n_url = "https://github.com/Sekai-World/sekai-i18n";
     const local_path_i18n = "assets/i18n";
     git(local_path_i18n).pull();
+    console.log(chalk.bold.bgGreen("GIT_ASSET [PULLING...]"))
   }
 
   loadI18n() {
@@ -77,10 +82,11 @@ class Sekai extends Client {
               )}`,
               filecontent
             );
-          });
+          })
         });
       });
     });
+    console.log(chalk.bold.bgBlue(`CLIENT_I18N [LOADING...]`))
   }
 
   async loadCommands() {
@@ -94,17 +100,21 @@ class Sekai extends Client {
 
         if (!(command instanceof Command))
           throw new SekaiError('INVALID_COMMAND_TYPE', filename);
-
+          
+          
+        let c_conflict = this.commands.get(command.name.toLowerCase());
+        if (c_conflict) throw new SekaiError('COMMAND_CONFLICT', command.name, c_conflict.name);
         this.commands.set(command.name, command);
 
         command.aliases.length &&
           command.aliases.map((alias) => {
-            const conflict = this.aliases.get(alias.toLowerCase());
-            if (conflict) throw new SekaiError('ALIAS_CONFLICT', alias, command.name, conflict);
+            const a_conflict = this.aliases.get(alias.toLowerCase());
+            if (a_conflict) throw new SekaiError('ALIAS_CONFLICT', alias, command.name, a_conflict);
             this.aliases.set(alias, command.name)
           });
       }
     });
+    console.log(chalk.bold.bgBlue(`CLIENT_COMMAND [REGISTERING...]`))
   }
 
   loadEvents() {
@@ -119,6 +129,7 @@ class Sekai extends Client {
         if (event.enable) super.on(eventname, (...args) => event.run(...args));
       }
     });
+    console.log(chalk.bold.bgBlue(`CLIENT_EVENT [LISTENING]`))
   }
 
   loadLocal() {
@@ -133,15 +144,17 @@ class Sekai extends Client {
         this.language.set(localname, local.language);
       }
     });
+    console.log(chalk.bold.bgBlue("CLIENT_LANGUAGE [LOADING...]"))
   }
 
   disconnectDatabase() {
     mongoose.disconnect();
+    console.log(chalk.bold.bgMagenta("MONGODB [DISCONNECTING...]"))
   }
 
   async loadDatabase() {
     await require("../assets/connectDB");
-    console.log(chalk.green(`[MONGODB | CONNECT]`));
+    console.log(chalk.bold.bgBlue(`MONGODB [CONNECTING...]`));
 
     glob(`${this.directory}/Models/*.js`, (err, files) => {
       if (err) throw new Error(err);
@@ -154,6 +167,7 @@ class Sekai extends Client {
         this.db.set(modelname, model);
       }
     });
+    console.log(chalk.bold.bgBlue("CLIENT_DB [READY]"));
   }
 
   async login() {

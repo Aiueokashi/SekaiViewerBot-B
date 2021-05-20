@@ -40,18 +40,26 @@ class Language {
         "I do not have sufficient rights to execute this command.",
         "You lack the required privileges to execute this command.",
       ],
+      help: () => [
+        "[command name]",
+        "use to see command details",
+        "available",
+        "under maintenance",
+        ],
       language: () => [
         "What language do you want to use?",
         "I speak english now !",
       ],
       chara: () => [
         (args) => `Can't find character: ${args}`,
-        (args) => `This character ID does not exsist: ${args}`,
+        (args) => `This character ID does not exsisted: ${args}`,
+        (lang) => `Your language does not already translated: ${lang}`
       ],
       mylang: () => [
         "You can't set same language code",
         "Changed user language",
         "new language:",
+        "invalid type",
       ],
       prefix: (prefix, oldPrefix) => [
         {
@@ -67,7 +75,12 @@ class Language {
             },
           ],
         },
+        'invalid type'
       ],
+      setlog: () => [
+        (args) => `Could not find channel: ${args}`,
+        (channelId) => `Set log channel for: <#${channelId}>`
+        ],
       reload: () => [
         "Reloaded all json assets.",
         (cmds) => `Reloaded all commands : \`${cmds}\`commands.`,

@@ -78,9 +78,11 @@ class Message {
 
     command.setMessage(message);
 
-    command.run(message, args);
-
-    if (command.cooldown > 0) command.startCooldown(message.author.id);
+    command.run(message, args).then((re) => {
+    if (command.cooldown > 0 && re !== "failed"){ 
+      command.startCooldown(message.author.id);
+    }
+    })
   }
 }
 

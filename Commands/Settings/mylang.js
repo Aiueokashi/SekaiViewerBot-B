@@ -6,9 +6,9 @@ class MyLanguage extends Command {
     super(client, {
       name: "mylanguage",
       description: "Change your language for search or response data",
-      usage: "mylanguage",
-      example: [],
-      args: false,
+      usage: "mylanguage <language flag>",
+      example: ['en','de','ja'],
+      args: true,
       category: "Settings",
       cooldown: 10000,
       aliases: ["myl"],
@@ -17,7 +17,7 @@ class MyLanguage extends Command {
     });
   }
 
-  async run(message) {
+  async run(message,[...args]) {
     let _already = false;
     const user = this.client.users.cache.get(message.author.id);
     const lang = this.client.language
@@ -35,26 +35,14 @@ class MyLanguage extends Command {
       _already = true;
     }
     const language = user.language;
-    super.respond(
-      new MessageEmbed()
-        .setTitle("Chose and send language key")
-        .setDescription(this.client.optlang.join(","))
-    );
-    function filter(message) {
-      if (message.author.id !== user.id) {
-        return false;
+      const newlang = args[0];
+      if(!this.client.optlang.includes(newlang)){
+        super.respond(`${lang[3]} :\n${this.client.optlang.join(',')}`);
+        return 'failed';
       }
-      return this.client.optlang.includes(message);
-    }
-    const response = await message.channel.awaitMessages(filter, {
-      max: 1,
-      time: 30000,
-      errors: ["time"],
-    });
-    if (response.first().content) {
-      const newlang = response.first().content;
       if (newlang === userData.language) {
-        return super.respond(lang[0]);
+        super.respond(lang[0]);
+        return 'failed';
       }
       if (_already) {
         userData.language = newlang;
@@ -71,9 +59,7 @@ class MyLanguage extends Command {
       super.respond(
         new MessageEmbed().setTitle(lang[1]).addField(lang[2], newlang)
       );
-    } else {
-      super.respond("timeout");
-    }
+      return 1;
   }
 }
 
