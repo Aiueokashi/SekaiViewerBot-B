@@ -5,7 +5,7 @@ class MyLanguage extends Command {
   constructor(client) {
     super(client, {
       name: "mylanguage",
-      description: "Change your language for search or response data",
+      description: `Change your language for search or response data\nlanguage flags: ${client.optlang.join(',')}`,
       usage: "mylanguage <language flag>",
       example: ['en','de','ja'],
       args: true,

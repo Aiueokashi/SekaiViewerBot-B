@@ -15,7 +15,7 @@ class Character extends Command {
     super(client, {
       name: "character",
       description:
-        "Search & show characters of Project Sekai\nDefault search language: `en`\n**You can change your language with command : `<<p>>language`**",
+        "Search & show characters of Project Sekai\nDefault search language: `en`\n**You can change your language with command : `<<p>>mylanguage`**",
       usage: "character <character name>",
       example: ["ichika", "一歌", "호시노"],
       args: true,

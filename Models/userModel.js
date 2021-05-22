@@ -5,6 +5,7 @@ const userModel = {
   language: String,
   settings : Schema.Types.Mixed,
   stats : Schema.Types.Mixed,
+  data : Schema.Types.Mixed,
 }
 
 module.exports = model('userModel', userModel);

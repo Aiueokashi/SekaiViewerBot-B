@@ -70,7 +70,10 @@ function EmbedToPage(message, pages, paging = false, trash = false) {
             time: 900000,
           });
 
-        trashCollector.on("collect", (r) => msg.delete({ timeout: 0 }));
+        trashCollector.on("collect", (r) =>{
+        msg.delete({ timeout: 500 }) 
+        message.delete({timeout: 500})
+        });
       }
     });
 }
