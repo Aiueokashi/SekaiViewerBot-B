@@ -19,15 +19,6 @@ Structures.extend(
           _ttl: [0, 0],
         };
 
-        this.reader = {
-          _volume: 1,
-          _words: [],
-          _oldWords: [],
-          _isReading: false,
-          _embed: {},
-          _connection: null,
-        };
-
         this.loadGuild = async function () {
           const guildModel = this.client.db.get("guildModel");
           const guildData = await guildModel.findOne({

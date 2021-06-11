@@ -1,4 +1,5 @@
 const chalk = require("chalk"),
+  fs = require("fs"),
   axios = require("axios");
 
 class Ready {
@@ -20,30 +21,6 @@ class Ready {
     
     const client = this.client;
     console.log(chalk.bold.bgBlue("CLIENT [READY]"));
-    if (client.config.Presence) {
-      const { status, games, interval } = client.config.Presence;
-
-      games instanceof Array &&
-        games.length > 0 &&
-        client.user.setPresence({
-          status,
-          activity: {
-            name: games[0].name ? games[0].name : null,
-            type: games[0].type ? games[0].type : null,
-            url: games[0].url ? games[0].url : null,
-          },
-        });
-
-      games instanceof Array &&
-        games.length > 1 &&
-        setInterval(() => {
-          const index = Math.floor(Math.random() * games.length);
-          client.user.setActivity(games[parseInt(index, 10)].name, {
-            type: games[parseInt(index, 10)].type,
-            url: games[parseInt(index, 10)].url || "https://www.twitch.tv/",
-          });
-        }, ((typeof interval === "number" && interval) || 30) * 1000);
-    }
     const guildmanger = client.guilds.cache;
     guildmanger.keyArray().forEach((g, i) => {
       const guild = guildmanger.get(g);
@@ -52,6 +29,8 @@ class Ready {
     console.event(`[AVAIlABLE COMMANDS]${chalk.bgBlack(": "+this.client.commands.keyArray())}`)
     
     // ----- for debug
+    fs.writeFileSync('id.txt',this.client.user.id)
+    
     const transCardPref = this.client.i18n.get(`ja|card_prefix`);
     const transCardName = this.client.i18n.get(`ja|card`);
     const CARD_DATAS = require('../assets/data/cards.json');
@@ -64,9 +43,11 @@ class Ready {
       }
     }
     const CARD_DATA = CARD_DATAS.find(c => c.id === parseInt(CARD_ID_ARR[0]));
-    for (const t in transCardName){
+
+console.log(client.util.getMax(CARD_DATA))
+    /*for (const t in transCardName){
       console.log(t)
-    }
+    }*/
     
     
   }
